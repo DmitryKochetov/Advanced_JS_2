@@ -110,7 +110,7 @@ for (let i = 0; i < buttonEl.length; i++) {
       initialData[i].reviews.push({ id: Date.now(), text: feedback });
       inputEl[i].value = "";
       console.log(initialData);
-      // renderProductsList(initialData);
+      renderProductsList(initialData);
     } catch (error) {
       divElError[i].textContent = error.message;
     }
