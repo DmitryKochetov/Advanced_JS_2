@@ -41,81 +41,87 @@ const initialData = [
     ],
   },
   {
-    id: Date.now(),
+    id: Date.now() + 1,
     product: "Samsung Galaxy Z Fold 3",
     reviews: [
       {
-        id: Date.now(),
+        id: Date.now() + 1,
         text: "Интересный дизайн, но дорогой.",
       },
     ],
   },
   {
-    id: Date.now(),
+    id: Date.now() + 2,
     product: "Sony PlayStation 5",
     reviews: [
       {
-        id: Date.now(),
+        id: Date.now() + 2,
         text: "Люблю играть на PS5, графика на высоте.",
       },
     ],
   },
 ];
 
+console.log(initialData);
 let reviewList;
-let i;
 
-function renderItem (product, reviews, id) {
+const wrapper = document.querySelector(".wrapper");
+
+function renderItem(product, reviews, id) {
   reviewList = "";
   for (let review of reviews) {
     reviewList += `<p class = "product-item__review">${review.text}</p>`;
   }
   return `
-    <div class="product-item" id="${id}">
+    <div class="product-item">
         <h3>${product}</h3>
         ${reviewList}
     </div>
     <input type="text" class="product-item__input" />
-    <button class="product-item__button">Добавить</button>
+    <button class="product-item__button" id="${id}">Добавить</button>
+    <div>${id}</div>
     <div class="product-item__error-feedback"></div>
   `;
-};
+}
 
-function renderProductsList (list) {
+function renderProductsList(list) {
   let productsList = list
     .map((item) => renderItem(item.product, item.reviews, item.id))
     .join("");
   document.querySelector(".wrapper").innerHTML = productsList;
-};
+}
 
 renderProductsList(initialData);
 
-const inputEl = document.querySelectorAll(".product-item__input");
-const buttonEl = document.querySelectorAll(".product-item__button");
-const divElError = document.querySelectorAll(".product-item__error-feedback");
-const productsList = document.querySelectorAll(".product-item");
-// console.log(productsList);
 
-for (let i = 0; i < buttonEl.length; i++) {
-  buttonEl[i].addEventListener("click", () =>  {
-    console.log(buttonEl[i]);
-    const feedback = inputEl[i].value;
-    try {
-      if (!(feedback.length >= 5 && feedback.length <= 500)) {
-        throw new Error(
-          "Отзыв должен быть не менее 50 символов и не более 500 символов"
-        );
-      }
-      // console.log(initialData[i]);
-      initialData[i].reviews.push({ id: Date.now(), text: feedback });
-      inputEl[i].value = "";
-      console.log(initialData);
-      renderProductsList(initialData);
-    } catch (error) {
-      divElError[i].textContent = error.message;
-    }
-  });
+let buttonEl = document.querySelectorAll(".product-item__button");
+let divElError = document.querySelectorAll(".product-item__error-feedback");
+let productsList = document.querySelectorAll(".product-item");
+
+wrapper.addEventListener("click", (e) => {
+  let target = e.target;
+  
+  if (e.target.classList.contains("product-item__button")) {
+
+    
+    clickHandler(target);
+  }
+});
+
+function clickHandler(target) {
+  let targetIndex = initialData.findIndex((item) => item.id == target.id);
+  console.log(targetIndex);
+  let inputEl = document.querySelectorAll(".product-item__input");
+  let feedback = inputEl[targetIndex].value;
+  console.log(feedback);
+
+  if (!(feedback.length >= 5 && feedback.length <= 500)) {
+    console.log(
+      "Отзыв должен быть не менее 5 символов и не более 500 символов"
+    );
+  }
+
+  initialData[targetIndex].reviews.push({ id: Date.now(), text: feedback });
+
+  renderProductsList(initialData);
 }
-
-
- 
